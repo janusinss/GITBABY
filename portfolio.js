@@ -356,63 +356,131 @@ function switchTab(tabName) {
     loadManageTab(tabName);
 }
 
-// 3. Load Data into Modal (The "Read" for Admin)
+// 3. Load Data into Modal
 async function loadManageTab(tabName) {
     const modalBody = document.getElementById('modal-body');
     modalBody.innerHTML = '<p>Loading...</p>';
 
-    // Example: PROJECTS CRUD
+    let html = '';
+
+    // --- PROJECTS TAB ---
     if (tabName === 'projects') {
         const result = await apiCall('projects_api.php', 'read', { params: `&profile_id=${PROFILE_ID}` });
         
-        let html = `
-            <button class="btn btn-orange" onclick="showAddForm('project')" style="margin-bottom: 1rem;">+ Add New Project</button>
-            <table class="crud-table">
-                <thead><tr><th>Title</th><th>Tags</th><th>Actions</th></tr></thead>
-                <tbody>
-        `;
-        
+        html = `<button class="btn btn-orange" onclick="openForm('projects')" style="margin-bottom: 1rem;">+ Add New Project</button>
+                <table class="crud-table">
+                <thead><tr><th>Title</th><th>Tags</th><th>Actions</th></tr></thead><tbody>`;
+
         if (result.success && result.data) {
             result.data.forEach(p => {
-                html += `
-                    <tr>
-                        <td>${p.title}</td>
-                        <td>${p.tags}</td>
-                        <td>
-                            <button class="action-btn btn-delete" onclick="deleteItem('projects', ${p.id})">Delete</button>
-                        </td>
-                    </tr>
-                `;
+                html += `<tr>
+                    <td>${p.title}</td>
+                    <td>${p.tags}</td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="openForm('projects', ${p.id})">Edit</button>
+                        <button class="action-btn btn-delete" onclick="deleteItem('projects', ${p.id})">Delete</button>
+                    </td>
+                </tr>`;
             });
         }
         html += '</tbody></table>';
-        modalBody.innerHTML = html;
-    }
+    } 
     
-    // Repeat similar blocks for 'skills', 'education', etc.
+    // --- SKILLS TAB ---
+    else if (tabName === 'skills') {
+        const result = await apiCall('skills_api.php', 'read', { params: `&profile_id=${PROFILE_ID}` });
+
+        html = `<button class="btn btn-orange" onclick="openForm('skills')" style="margin-bottom: 1rem;">+ Add New Skill</button>
+                <table class="crud-table">
+                <thead><tr><th>Skill</th><th>%</th><th>Type</th><th>Actions</th></tr></thead><tbody>`;
+
+        if (result.success && result.data) {
+            result.data.forEach(s => {
+                html += `<tr>
+                    <td>${s.name}</td>
+                    <td>${s.proficiency}%</td>
+                    <td>${s.type}</td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="openForm('skills', ${s.id})">Edit</button>
+                        <button class="action-btn btn-delete" onclick="deleteItem('skills', ${s.id})">Delete</button>
+                    </td>
+                </tr>`;
+            });
+        }
+        html += '</tbody></table>';
+    }
+
+    // --- EDUCATION TAB ---
+    else if (tabName === 'education') {
+        const result = await apiCall('education_api.php', 'read', { params: `&profile_id=${PROFILE_ID}` });
+
+        html = `<button class="btn btn-orange" onclick="openForm('education')" style="margin-bottom: 1rem;">+ Add Education</button>
+                <table class="crud-table">
+                <thead><tr><th>Institution</th><th>Degree</th><th>Year</th><th>Actions</th></tr></thead><tbody>`;
+
+        if (result.success && result.data) {
+            result.data.forEach(e => {
+                html += `<tr>
+                    <td>${e.institution}</td>
+                    <td>${e.degree}</td>
+                    <td>${e.end_year}</td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="openForm('education', ${e.id})">Edit</button>
+                        <button class="action-btn btn-delete" onclick="deleteItem('education', ${e.id})">Delete</button>
+                    </td>
+                </tr>`;
+            });
+        }
+        html += '</tbody></table>';
+    }
+
+    // --- PROFILE TAB ---
+    else if (tabName === 'profile') {
+        const result = await apiCall('profile_api.php', 'read', { params: `&id=${PROFILE_ID}` });
+
+        if (result.success && result.data) {
+            const p = result.data;
+            html = `
+                <div style="margin-bottom: 20px;">
+                    <h3>${p.name}</h3>
+                    <p><strong>Role:</strong> ${p.role}</p>
+                    <p><strong>Bio:</strong> ${p.bio}</p>
+                    <p><strong>Email:</strong> ${p.contact_email}</p>
+                    <p><strong>Phone:</strong> ${p.phone}</p>
+                </div>
+                <button class="btn btn-orange" onclick="openForm('profile', ${p.id})">Edit Profile Information</button>
+            `;
+        } else {
+            html = '<p>Profile not found.</p>';
+        }
+    }
+
+    modalBody.innerHTML = html;
 }
 
 // 4. Delete Functionality
 async function deleteItem(type, id) {
     if(!confirm('Are you sure you want to delete this item?')) return;
 
-    // Map tab name to API file
+    // UPDATED API MAP
     const apiMap = {
         'projects': 'projects_api.php',
-        'skills': 'skills_api.php'
+        'skills': 'skills_api.php',
+        'education': 'education_api.php' // Added education
     };
 
     const result = await apiCall(apiMap[type], 'delete', {
         method: 'POST',
-        body: { id: id } // Using body for POST
+        body: { id: id }
     });
 
     if (result.success) {
         alert('Item deleted!');
-        loadManageTab(type); // Refresh list
-        // Reload main site content to reflect changes
-        loadProjects(); 
-        loadSkills();
+        loadManageTab(type);
+        
+        if (type === 'projects') loadProjects(); 
+        if (type === 'skills') loadSkills();
+        if (type === 'education') loadEducation();
     } else {
         alert('Error: ' + result.message);
     }
@@ -436,28 +504,27 @@ async function openForm(type, id = null) {
     let data = null;
     let action = 'add';
     
-    // If ID is provided, we are Editing. Fetch existing data first.
     if (id) {
         action = 'update';
-        // Map type to correct API endpoint
+        // UPDATED API MAP
         const apiMap = {
             'projects': 'projects_api.php',
             'skills': 'skills_api.php',
-            'education': 'education_api.php'
+            'education': 'education_api.php',
+            'profile': 'profile_api.php'
         };
         
-        // Fetch the single item data
+        // Note: Profile API uses 'id', others use 'profile_id' generally, 
+        // but 'read' with specific ID works for all based on your PHP code.
         const result = await apiCall(apiMap[type], 'read', { params: `&id=${id}` });
         if (result.success && result.data) {
             data = result.data;
         }
     }
 
-    // Generate the Form HTML
     const formHTML = generateFormHTML(type, data, action);
     modalBody.innerHTML = formHTML;
 
-    // Attach Event Listener to the new form
     const form = document.getElementById('crud-form');
     form.addEventListener('submit', (e) => handleFormSubmit(e, type, action, id));
 }
@@ -466,99 +533,62 @@ async function openForm(type, id = null) {
  * Generates HTML input fields based on the table type
  */
 function generateFormHTML(type, data, action) {
-    // Helper to safely get value (empty string if adding)
     const val = (key) => data && data[key] ? data[key] : '';
-    
     let fields = '';
 
-    // --- 1. PROJECTS FORM ---
+    // --- PROJECTS ---
     if (type === 'projects') {
         fields = `
-            <div class="form-group">
-                <label>Project Title</label>
-                <input type="text" name="title" value="${val('title')}" required>
-            </div>
-            <div class="form-group">
-                <label>Description</label>
-                <textarea name="description" rows="3">${val('description')}</textarea>
-            </div>
-            <div class="form-group">
-                <label>Image Path (e.g., img/project1.png)</label>
-                <input type="text" name="image" value="${val('image')}">
-            </div>
-            <div class="form-group">
-                <label>Project Link (URL)</label>
-                <input type="text" name="link" value="${val('link')}">
-            </div>
-            <div class="form-group">
-                <label>Tags (comma separated)</label>
-                <input type="text" name="tags" value="${val('tags')}" placeholder="UI, Web, App">
-            </div>
+            <div class="form-group"><label>Title</label><input type="text" name="title" value="${val('title')}" required></div>
+            <div class="form-group"><label>Description</label><textarea name="description" rows="3">${val('description')}</textarea></div>
+            <div class="form-group"><label>Image Path</label><input type="text" name="image" value="${val('image')}"></div>
+            <div class="form-group"><label>Link</label><input type="text" name="link" value="${val('link')}"></div>
+            <div class="form-group"><label>Tags</label><input type="text" name="tags" value="${val('tags')}"></div>
         `;
     } 
-    // --- 2. SKILLS FORM ---
+    // --- SKILLS ---
     else if (type === 'skills') {
         const isProg = val('type') === 'programming' ? 'selected' : '';
         const isTool = val('type') === 'tool' ? 'selected' : '';
-        
         fields = `
-            <div class="form-group">
-                <label>Skill Name</label>
-                <input type="text" name="name" value="${val('name')}" required>
-            </div>
-            <div class="form-group">
-                <label>Proficiency (0-100)</label>
-                <input type="number" name="proficiency" min="0" max="100" value="${val('proficiency')}" required>
-            </div>
-            <div class="form-group">
-                <label>Type</label>
-                <select name="type">
-                    <option value="programming" ${isProg}>Programming Language</option>
-                    <option value="tool" ${isTool}>Tool / Software</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Icon Path</label>
-                <input type="text" name="icon" value="${val('icon')}" placeholder="img/html_icon.png">
-            </div>
+            <div class="form-group"><label>Name</label><input type="text" name="name" value="${val('name')}" required></div>
+            <div class="form-group"><label>Proficiency (0-100)</label><input type="number" name="proficiency" value="${val('proficiency')}" required></div>
+            <div class="form-group"><label>Type</label><select name="type"><option value="programming" ${isProg}>Programming</option><option value="tool" ${isTool}>Tool</option></select></div>
+            <div class="form-group"><label>Icon Path</label><input type="text" name="icon" value="${val('icon')}"></div>
         `;
     }
-    // --- 3. EDUCATION FORM ---
+    // --- EDUCATION ---
     else if (type === 'education') {
         fields = `
-            <div class="form-group">
-                <label>Institution / School</label>
-                <input type="text" name="institution" value="${val('institution')}" required>
-            </div>
-            <div class="form-group">
-                <label>Degree</label>
-                <input type="text" name="degree" value="${val('degree')}">
-            </div>
-            <div class="form-group">
-                <label>Field of Study</label>
-                <input type="text" name="field" value="${val('field')}">
-            </div>
+            <div class="form-group"><label>Institution</label><input type="text" name="institution" value="${val('institution')}" required></div>
+            <div class="form-group"><label>Degree</label><input type="text" name="degree" value="${val('degree')}"></div>
+            <div class="form-group"><label>Field</label><input type="text" name="field" value="${val('field')}"></div>
             <div class="form-row">
-                <div class="form-group">
-                    <label>Start Year</label>
-                    <input type="number" name="start_year" value="${val('start_year')}">
-                </div>
-                <div class="form-group">
-                    <label>End Year (or 'Present')</label>
-                    <input type="text" name="end_year" value="${val('end_year')}">
-                </div>
+                <div class="form-group"><label>Start Year</label><input type="number" name="start_year" value="${val('start_year')}"></div>
+                <div class="form-group"><label>End Year</label><input type="text" name="end_year" value="${val('end_year')}"></div>
             </div>
-            <div class="form-group">
-                <label>Description</label>
-                <textarea name="description" rows="3">${val('description')}</textarea>
+            <div class="form-group"><label>Description</label><textarea name="description">${val('description')}</textarea></div>
+        `;
+    }
+    // --- PROFILE (New Added Block) ---
+    else if (type === 'profile') {
+        fields = `
+            <div class="form-group"><label>Name</label><input type="text" name="name" value="${val('name')}" required></div>
+            <div class="form-group"><label>Role</label><input type="text" name="role" value="${val('role')}"></div>
+            <div class="form-group"><label>Bio</label><textarea name="bio" rows="4">${val('bio')}</textarea></div>
+            <div class="form-row">
+                <div class="form-group"><label>Email</label><input type="email" name="contact_email" value="${val('contact_email')}"></div>
+                <div class="form-group"><label>Phone</label><input type="text" name="phone" value="${val('phone')}"></div>
             </div>
+            <div class="form-group"><label>Location</label><input type="text" name="location" value="${val('location')}"></div>
+            <div class="form-group"><label>Experience (Years)</label><input type="number" name="years_experience" value="${val('years_experience')}"></div>
+            <div class="form-group"><label>Projects Completed</label><input type="number" name="projects_completed" value="${val('projects_completed')}"></div>
         `;
     }
 
-    // Return the complete form wrapper
     return `
         <div class="form-header">
-            <h3>${action === 'add' ? 'Add New' : 'Edit'} ${type.slice(0, -1)}</h3>
+            <h3>${action === 'add' ? 'Add' : 'Edit'} ${type}</h3>
             <button class="btn-cancel" onclick="loadManageTab('${type}')">Cancel</button>
         </div>
         <form id="crud-form">
@@ -575,20 +605,19 @@ async function handleFormSubmit(event, type, action, id) {
     event.preventDefault();
     const form = event.target;
     const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries()); // Convert to JSON object
+    const data = Object.fromEntries(formData.entries());
 
-    // Add necessary IDs
     data.profile_id = PROFILE_ID; 
     if (id) data.id = id;
 
-    // Map type to API file
+    // UPDATED API MAP
     const apiMap = {
         'projects': 'projects_api.php',
         'skills': 'skills_api.php',
-        'education': 'education_api.php'
+        'education': 'education_api.php',
+        'profile': 'profile_api.php' // Added profile
     };
 
-    // Send Request
     const result = await apiCall(apiMap[type], action, {
         method: 'POST',
         body: data
@@ -596,12 +625,13 @@ async function handleFormSubmit(event, type, action, id) {
 
     if (result.success) {
         alert('Saved successfully!');
-        loadManageTab(type); // Return to table view
+        loadManageTab(type); 
         
-        // Refresh the main website content behind the modal
+        // Reload main site content
         if (type === 'projects') loadProjects();
         if (type === 'skills') loadSkills();
         if (type === 'education') loadEducation();
+        if (type === 'profile') loadProfile(); // Added loadProfile
     } else {
         alert('Error: ' + result.message);
     }
