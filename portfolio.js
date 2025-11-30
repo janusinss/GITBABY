@@ -327,3 +327,282 @@ window.portfolioAPI = {
     apiCall,
     PROFILE_ID
 };
+
+// --- MANAGE BUTTON LOGIC ---
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Toggle Modal
+    const manageBtn = document.getElementById('manage-btn');
+    const modal = document.getElementById('manage-modal');
+    const closeBtn = document.getElementById('close-modal');
+
+    manageBtn.addEventListener('click', () => {
+        modal.style.display = 'flex';
+        loadManageTab('projects'); // Load projects by default
+    });
+
+    closeBtn.addEventListener('click', () => {
+        modal.style.display = 'none';
+    });
+});
+
+// 2. Switch Tabs
+function switchTab(tabName) {
+    // Update active tab style
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    // Load content
+    loadManageTab(tabName);
+}
+
+// 3. Load Data into Modal (The "Read" for Admin)
+async function loadManageTab(tabName) {
+    const modalBody = document.getElementById('modal-body');
+    modalBody.innerHTML = '<p>Loading...</p>';
+
+    // Example: PROJECTS CRUD
+    if (tabName === 'projects') {
+        const result = await apiCall('projects_api.php', 'read', { params: `&profile_id=${PROFILE_ID}` });
+        
+        let html = `
+            <button class="btn btn-orange" onclick="showAddForm('project')" style="margin-bottom: 1rem;">+ Add New Project</button>
+            <table class="crud-table">
+                <thead><tr><th>Title</th><th>Tags</th><th>Actions</th></tr></thead>
+                <tbody>
+        `;
+        
+        if (result.success && result.data) {
+            result.data.forEach(p => {
+                html += `
+                    <tr>
+                        <td>${p.title}</td>
+                        <td>${p.tags}</td>
+                        <td>
+                            <button class="action-btn btn-delete" onclick="deleteItem('projects', ${p.id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+        html += '</tbody></table>';
+        modalBody.innerHTML = html;
+    }
+    
+    // Repeat similar blocks for 'skills', 'education', etc.
+}
+
+// 4. Delete Functionality
+async function deleteItem(type, id) {
+    if(!confirm('Are you sure you want to delete this item?')) return;
+
+    // Map tab name to API file
+    const apiMap = {
+        'projects': 'projects_api.php',
+        'skills': 'skills_api.php'
+    };
+
+    const result = await apiCall(apiMap[type], 'delete', {
+        method: 'POST',
+        body: { id: id } // Using body for POST
+    });
+
+    if (result.success) {
+        alert('Item deleted!');
+        loadManageTab(type); // Refresh list
+        // Reload main site content to reflect changes
+        loadProjects(); 
+        loadSkills();
+    } else {
+        alert('Error: ' + result.message);
+    }
+}
+
+// 5. Add/Update would require a simple form injection into modalBody
+function showAddForm(type) {
+    // Simple Prompt-based Add for demonstration (Activity requires Form)
+    // Ideally, you inject a <form> HTML string into modalBody here
+    // and attach a submit listener to call apiCall(..., 'add', ...)
+    alert("You clicked Add! (You need to implement the form HTML here)");
+}
+
+/**
+ * Renders and handles Add/Edit Forms for the Manage Modal
+ */
+async function openForm(type, id = null) {
+    const modalBody = document.getElementById('modal-body');
+    modalBody.innerHTML = '<p>Loading form...</p>';
+
+    let data = null;
+    let action = 'add';
+    
+    // If ID is provided, we are Editing. Fetch existing data first.
+    if (id) {
+        action = 'update';
+        // Map type to correct API endpoint
+        const apiMap = {
+            'projects': 'projects_api.php',
+            'skills': 'skills_api.php',
+            'education': 'education_api.php'
+        };
+        
+        // Fetch the single item data
+        const result = await apiCall(apiMap[type], 'read', { params: `&id=${id}` });
+        if (result.success && result.data) {
+            data = result.data;
+        }
+    }
+
+    // Generate the Form HTML
+    const formHTML = generateFormHTML(type, data, action);
+    modalBody.innerHTML = formHTML;
+
+    // Attach Event Listener to the new form
+    const form = document.getElementById('crud-form');
+    form.addEventListener('submit', (e) => handleFormSubmit(e, type, action, id));
+}
+
+/**
+ * Generates HTML input fields based on the table type
+ */
+function generateFormHTML(type, data, action) {
+    // Helper to safely get value (empty string if adding)
+    const val = (key) => data && data[key] ? data[key] : '';
+    
+    let fields = '';
+
+    // --- 1. PROJECTS FORM ---
+    if (type === 'projects') {
+        fields = `
+            <div class="form-group">
+                <label>Project Title</label>
+                <input type="text" name="title" value="${val('title')}" required>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" rows="3">${val('description')}</textarea>
+            </div>
+            <div class="form-group">
+                <label>Image Path (e.g., img/project1.png)</label>
+                <input type="text" name="image" value="${val('image')}">
+            </div>
+            <div class="form-group">
+                <label>Project Link (URL)</label>
+                <input type="text" name="link" value="${val('link')}">
+            </div>
+            <div class="form-group">
+                <label>Tags (comma separated)</label>
+                <input type="text" name="tags" value="${val('tags')}" placeholder="UI, Web, App">
+            </div>
+        `;
+    } 
+    // --- 2. SKILLS FORM ---
+    else if (type === 'skills') {
+        const isProg = val('type') === 'programming' ? 'selected' : '';
+        const isTool = val('type') === 'tool' ? 'selected' : '';
+        
+        fields = `
+            <div class="form-group">
+                <label>Skill Name</label>
+                <input type="text" name="name" value="${val('name')}" required>
+            </div>
+            <div class="form-group">
+                <label>Proficiency (0-100)</label>
+                <input type="number" name="proficiency" min="0" max="100" value="${val('proficiency')}" required>
+            </div>
+            <div class="form-group">
+                <label>Type</label>
+                <select name="type">
+                    <option value="programming" ${isProg}>Programming Language</option>
+                    <option value="tool" ${isTool}>Tool / Software</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Icon Path</label>
+                <input type="text" name="icon" value="${val('icon')}" placeholder="img/html_icon.png">
+            </div>
+        `;
+    }
+    // --- 3. EDUCATION FORM ---
+    else if (type === 'education') {
+        fields = `
+            <div class="form-group">
+                <label>Institution / School</label>
+                <input type="text" name="institution" value="${val('institution')}" required>
+            </div>
+            <div class="form-group">
+                <label>Degree</label>
+                <input type="text" name="degree" value="${val('degree')}">
+            </div>
+            <div class="form-group">
+                <label>Field of Study</label>
+                <input type="text" name="field" value="${val('field')}">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Start Year</label>
+                    <input type="number" name="start_year" value="${val('start_year')}">
+                </div>
+                <div class="form-group">
+                    <label>End Year (or 'Present')</label>
+                    <input type="text" name="end_year" value="${val('end_year')}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea name="description" rows="3">${val('description')}</textarea>
+            </div>
+        `;
+    }
+
+    // Return the complete form wrapper
+    return `
+        <div class="form-header">
+            <h3>${action === 'add' ? 'Add New' : 'Edit'} ${type.slice(0, -1)}</h3>
+            <button class="btn-cancel" onclick="loadManageTab('${type}')">Cancel</button>
+        </div>
+        <form id="crud-form">
+            ${fields}
+            <button type="submit" class="submit-btn save-btn">Save Changes</button>
+        </form>
+    `;
+}
+
+/**
+ * Handles the actual API submission
+ */
+async function handleFormSubmit(event, type, action, id) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries()); // Convert to JSON object
+
+    // Add necessary IDs
+    data.profile_id = PROFILE_ID; 
+    if (id) data.id = id;
+
+    // Map type to API file
+    const apiMap = {
+        'projects': 'projects_api.php',
+        'skills': 'skills_api.php',
+        'education': 'education_api.php'
+    };
+
+    // Send Request
+    const result = await apiCall(apiMap[type], action, {
+        method: 'POST',
+        body: data
+    });
+
+    if (result.success) {
+        alert('Saved successfully!');
+        loadManageTab(type); // Return to table view
+        
+        // Refresh the main website content behind the modal
+        if (type === 'projects') loadProjects();
+        if (type === 'skills') loadSkills();
+        if (type === 'education') loadEducation();
+    } else {
+        alert('Error: ' + result.message);
+    }
+}
