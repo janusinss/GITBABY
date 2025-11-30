@@ -328,17 +328,24 @@ window.portfolioAPI = {
     PROFILE_ID
 };
 
+// ==========================================
+// REPLACE EVERYTHING FROM "MANAGE BUTTON LOGIC" DOWNWARDS
+// ==========================================
+
 // --- MANAGE BUTTON LOGIC ---
 
+// 1. Global state to remember the active tab
+let currentActiveTab = 'projects';
+
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Toggle Modal
     const manageBtn = document.getElementById('manage-btn');
     const modal = document.getElementById('manage-modal');
     const closeBtn = document.getElementById('close-modal');
 
     manageBtn.addEventListener('click', () => {
         modal.style.display = 'flex';
-        loadManageTab('projects'); // Load projects by default
+        // Open the last saved tab instead of defaulting to projects
+        switchTab(currentActiveTab);
     });
 
     closeBtn.addEventListener('click', () => {
@@ -348,9 +355,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // 2. Switch Tabs
 function switchTab(tabName) {
-    // Update active tab style
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    // Save the state
+    currentActiveTab = tabName;
+
+    // Update UI: Remove 'active' from all buttons, add to current
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+        // Check if the button's onclick attribute contains the current tab name
+        if (btn.getAttribute('onclick').includes(tabName)) {
+            btn.classList.add('active');
+        }
+    });
     
     // Load content
     loadManageTab(tabName);
@@ -359,7 +374,7 @@ function switchTab(tabName) {
 // 3. Load Data into Modal
 async function loadManageTab(tabName) {
     const modalBody = document.getElementById('modal-body');
-    modalBody.innerHTML = '<p>Loading...</p>';
+    modalBody.innerHTML = '<div class="loading-spinner">Loading...</div>';
 
     let html = '';
 
@@ -367,15 +382,16 @@ async function loadManageTab(tabName) {
     if (tabName === 'projects') {
         const result = await apiCall('projects_api.php', 'read', { params: `&profile_id=${PROFILE_ID}` });
         
-        html = `<button class="btn btn-orange" onclick="openForm('projects')" style="margin-bottom: 1rem;">+ Add New Project</button>
+        html = `<div class="tab-actions"><button class="btn btn-orange" onclick="openForm('projects')">+ Add New Project</button></div>
+                <div class="table-responsive">
                 <table class="crud-table">
                 <thead><tr><th>Title</th><th>Tags</th><th>Actions</th></tr></thead><tbody>`;
 
         if (result.success && result.data) {
             result.data.forEach(p => {
                 html += `<tr>
-                    <td>${p.title}</td>
-                    <td>${p.tags}</td>
+                    <td><strong>${p.title}</strong></td>
+                    <td><span class="tag-badge">${p.tags}</span></td>
                     <td>
                         <button class="action-btn btn-edit" onclick="openForm('projects', ${p.id})">Edit</button>
                         <button class="action-btn btn-delete" onclick="deleteItem('projects', ${p.id})">Delete</button>
@@ -383,22 +399,23 @@ async function loadManageTab(tabName) {
                 </tr>`;
             });
         }
-        html += '</tbody></table>';
+        html += '</tbody></table></div>';
     } 
     
     // --- SKILLS TAB ---
     else if (tabName === 'skills') {
         const result = await apiCall('skills_api.php', 'read', { params: `&profile_id=${PROFILE_ID}` });
 
-        html = `<button class="btn btn-orange" onclick="openForm('skills')" style="margin-bottom: 1rem;">+ Add New Skill</button>
+        html = `<div class="tab-actions"><button class="btn btn-orange" onclick="openForm('skills')">+ Add New Skill</button></div>
+                <div class="table-responsive">
                 <table class="crud-table">
-                <thead><tr><th>Skill</th><th>%</th><th>Type</th><th>Actions</th></tr></thead><tbody>`;
+                <thead><tr><th>Skill</th><th>Proficiency</th><th>Type</th><th>Actions</th></tr></thead><tbody>`;
 
         if (result.success && result.data) {
             result.data.forEach(s => {
                 html += `<tr>
-                    <td>${s.name}</td>
-                    <td>${s.proficiency}%</td>
+                    <td><div class="flex-align"><img src="${s.icon || 'img/default_icon.png'}" class="mini-icon"> ${s.name}</div></td>
+                    <td><div class="progress-bar"><div style="width:${s.proficiency}%"></div></div> ${s.proficiency}%</td>
                     <td>${s.type}</td>
                     <td>
                         <button class="action-btn btn-edit" onclick="openForm('skills', ${s.id})">Edit</button>
@@ -407,23 +424,23 @@ async function loadManageTab(tabName) {
                 </tr>`;
             });
         }
-        html += '</tbody></table>';
+        html += '</tbody></table></div>';
     }
 
     // --- EDUCATION TAB ---
     else if (tabName === 'education') {
         const result = await apiCall('education_api.php', 'read', { params: `&profile_id=${PROFILE_ID}` });
 
-        html = `<button class="btn btn-orange" onclick="openForm('education')" style="margin-bottom: 1rem;">+ Add Education</button>
+        html = `<div class="tab-actions"><button class="btn btn-orange" onclick="openForm('education')">+ Add Education</button></div>
+                <div class="table-responsive">
                 <table class="crud-table">
-                <thead><tr><th>Institution</th><th>Degree</th><th>Year</th><th>Actions</th></tr></thead><tbody>`;
+                <thead><tr><th>Institution</th><th>Degree</th><th>Actions</th></tr></thead><tbody>`;
 
         if (result.success && result.data) {
             result.data.forEach(e => {
                 html += `<tr>
                     <td>${e.institution}</td>
-                    <td>${e.degree}</td>
-                    <td>${e.end_year}</td>
+                    <td>${e.degree}<br><small>${e.end_year}</small></td>
                     <td>
                         <button class="action-btn btn-edit" onclick="openForm('education', ${e.id})">Edit</button>
                         <button class="action-btn btn-delete" onclick="deleteItem('education', ${e.id})">Delete</button>
@@ -431,24 +448,54 @@ async function loadManageTab(tabName) {
                 </tr>`;
             });
         }
-        html += '</tbody></table>';
+        html += '</tbody></table></div>';
     }
 
-    // --- PROFILE TAB ---
+    // --- PROFILE TAB (Beautified Design) ---
     else if (tabName === 'profile') {
         const result = await apiCall('profile_api.php', 'read', { params: `&id=${PROFILE_ID}` });
 
         if (result.success && result.data) {
             const p = result.data;
             html = `
-                <div style="margin-bottom: 20px;">
-                    <h3>${p.name}</h3>
-                    <p><strong>Role:</strong> ${p.role}</p>
-                    <p><strong>Bio:</strong> ${p.bio}</p>
-                    <p><strong>Email:</strong> ${p.contact_email}</p>
-                    <p><strong>Phone:</strong> ${p.phone}</p>
+                <div class="profile-view-card">
+                    <div class="profile-view-header">
+                        <div class="profile-avatar-large">
+                            <img src="${p.photo || 'img/default_avatar.png'}" alt="Profile">
+                        </div>
+                        <div class="profile-header-info">
+                            <h2>${p.name}</h2>
+                            <span class="role-badge">${p.role}</span>
+                        </div>
+                        <button class="btn btn-orange edit-profile-btn" onclick="openForm('profile', ${p.id})">
+                            Edit Profile
+                        </button>
+                    </div>
+                    
+                    <div class="profile-grid">
+                        <div class="profile-item">
+                            <label>Email</label>
+                            <p>${p.contact_email}</p>
+                        </div>
+                        <div class="profile-item">
+                            <label>Phone</label>
+                            <p>${p.phone}</p>
+                        </div>
+                        <div class="profile-item">
+                            <label>Location</label>
+                            <p>${p.location}</p>
+                        </div>
+                        <div class="profile-item">
+                            <label>Experience</label>
+                            <p>${p.years_experience} Years</p>
+                        </div>
+                    </div>
+
+                    <div class="profile-full-width">
+                        <label>Biography</label>
+                        <p class="bio-text">${p.bio}</p>
+                    </div>
                 </div>
-                <button class="btn btn-orange" onclick="openForm('profile', ${p.id})">Edit Profile Information</button>
             `;
         } else {
             html = '<p>Profile not found.</p>';
@@ -462,23 +509,25 @@ async function loadManageTab(tabName) {
 async function deleteItem(type, id) {
     if(!confirm('Are you sure you want to delete this item?')) return;
 
-    // UPDATED API MAP
     const apiMap = {
         'projects': 'projects_api.php',
         'skills': 'skills_api.php',
-        'education': 'education_api.php' // Added education
+        'education': 'education_api.php'
     };
 
+    // FIX: Pass ID in URL params as well
     const result = await apiCall(apiMap[type], 'delete', {
+        params: `&id=${id}`,
         method: 'POST',
         body: { id: id }
     });
 
     if (result.success) {
-        alert('Item deleted!');
+        // Reload current tab
         loadManageTab(type);
         
-        if (type === 'projects') loadProjects(); 
+        // Update main site
+        if (type === 'projects') loadProjects();
         if (type === 'skills') loadSkills();
         if (type === 'education') loadEducation();
     } else {
@@ -486,12 +535,10 @@ async function deleteItem(type, id) {
     }
 }
 
-// 5. Add/Update would require a simple form injection into modalBody
+// 5. Add/Update Form Logic
 function showAddForm(type) {
-    // Simple Prompt-based Add for demonstration (Activity requires Form)
-    // Ideally, you inject a <form> HTML string into modalBody here
-    // and attach a submit listener to call apiCall(..., 'add', ...)
-    alert("You clicked Add! (You need to implement the form HTML here)");
+    // This is a legacy function, we use openForm now
+    openForm(type);
 }
 
 /**
@@ -506,7 +553,6 @@ async function openForm(type, id = null) {
     
     if (id) {
         action = 'update';
-        // UPDATED API MAP
         const apiMap = {
             'projects': 'projects_api.php',
             'skills': 'skills_api.php',
@@ -514,8 +560,6 @@ async function openForm(type, id = null) {
             'profile': 'profile_api.php'
         };
         
-        // Note: Profile API uses 'id', others use 'profile_id' generally, 
-        // but 'read' with specific ID works for all based on your PHP code.
         const result = await apiCall(apiMap[type], 'read', { params: `&id=${id}` });
         if (result.success && result.data) {
             data = result.data;
@@ -570,7 +614,7 @@ function generateFormHTML(type, data, action) {
             <div class="form-group"><label>Description</label><textarea name="description">${val('description')}</textarea></div>
         `;
     }
-    // --- PROFILE (New Added Block) ---
+    // --- PROFILE ---
     else if (type === 'profile') {
         fields = `
             <div class="form-group"><label>Name</label><input type="text" name="name" value="${val('name')}" required></div>
@@ -589,7 +633,7 @@ function generateFormHTML(type, data, action) {
     return `
         <div class="form-header">
             <h3>${action === 'add' ? 'Add' : 'Edit'} ${type}</h3>
-            <button class="btn-cancel" onclick="loadManageTab('${type}')">Cancel</button>
+            <button class="btn-cancel" type="button" onclick="switchTab('${type}')">Cancel</button>
         </div>
         <form id="crud-form">
             ${fields}
@@ -607,31 +651,37 @@ async function handleFormSubmit(event, type, action, id) {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
-    data.profile_id = PROFILE_ID; 
-    if (id) data.id = id;
+    data.profile_id = PROFILE_ID;
+    
+    // FIX: Add ID to URL params for Updates
+    let params = '';
+    if (id) {
+        data.id = id;
+        params = `&id=${id}`; // This fixes the "ID is required" error
+    }
 
-    // UPDATED API MAP
     const apiMap = {
         'projects': 'projects_api.php',
         'skills': 'skills_api.php',
         'education': 'education_api.php',
-        'profile': 'profile_api.php' // Added profile
+        'profile': 'profile_api.php'
     };
 
     const result = await apiCall(apiMap[type], action, {
+        params: params, // Pass the ID in URL
         method: 'POST',
         body: data
     });
 
     if (result.success) {
-        alert('Saved successfully!');
-        loadManageTab(type); 
+        //alert('Saved successfully!');
+        switchTab(type); // Return to the list view using global state
         
         // Reload main site content
         if (type === 'projects') loadProjects();
         if (type === 'skills') loadSkills();
         if (type === 'education') loadEducation();
-        if (type === 'profile') loadProfile(); // Added loadProfile
+        if (type === 'profile') loadProfile();
     } else {
         alert('Error: ' + result.message);
     }
