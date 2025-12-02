@@ -738,10 +738,10 @@ function generateFormHTML(type, data, action) {
         <div class="form-group"><label>Name</label><input type="text" name="name" value="${val('name')}" required></div>
         <div class="form-group"><label>Role</label><input type="text" name="role" value="${val('role')}"></div>
         
-        <div class="form-group"><label>Hero Bio (Mini Profile)</label><textarea name="hero_bio" rows="3">${val('hero_bio')}</textarea></div>
-        ${createFileInput('Hero Image (Mini Profile)', 'hero_image', val('hero_image'))}
+        <div class="form-group"><label>Main Profile Bio</label><textarea name="hero_bio" rows="3">${val('hero_bio')}</textarea></div>
+        ${createFileInput('Main Profile Image', 'hero_image', val('hero_image'))}
         
-        <div class="form-group"><label>Main Biography</label><textarea name="bio" rows="5">${val('bio')}</textarea></div>
+        <div class="form-group"><label>About me Biography</label><textarea name="bio" rows="5">${val('bio')}</textarea></div>
 
         <div class="form-row">
             <div class="form-group"><label>Email</label><input type="email" name="contact_email" value="${val('contact_email')}"></div>
@@ -762,7 +762,7 @@ function generateFormHTML(type, data, action) {
         </div>
         <div class="form-group"><label>LinkedIn</label><input type="text" name="linkedin" value="${val('linkedin')}"></div>
 
-        ${createFileInput('Profile Photo', 'photo', val('photo'))}
+        ${createFileInput('About Me Photo', 'photo', val('photo'))}
     `;
     }
 
