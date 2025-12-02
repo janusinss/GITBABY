@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
 
         if (in_array($fileExt, $allowed)) {
-            if ($fileSize < 5000000) { // 5MB limit
+            if ($fileSize < 20000000) { // 20MB limit
                 // Create unique filename to prevent overwrites
                 $newFileName = uniqid('', true) . "." . $fileExt;
                 $uploadDir = '../img/uploads/';
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $response['message'] = 'Failed to move uploaded file.';
                 }
             } else {
-                $response['message'] = 'File is too large. Max 5MB.';
+                $response['message'] = 'File is too large. Max 20MB.';
             }
         } else {
             $response['message'] = 'Invalid file type. Allowed: ' . implode(', ', $allowed);

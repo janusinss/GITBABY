@@ -67,6 +67,18 @@ async function loadProfile() {
         // Update about section
         document.querySelector('.about-description').textContent = profile.bio;
 
+        // Update About Me Image
+        const aboutImg = document.querySelector('.about-profile-image');
+        if (aboutImg && profile.photo) {
+            aboutImg.src = profile.photo;
+        }
+
+        // Update About Me Name
+        const aboutName = document.querySelector('.about-text .section-title .highlight');
+        if (aboutName) {
+            aboutName.textContent = profile.name + '?';
+        }
+
         // Update stats
         const stats = document.querySelectorAll('.stat-number');
         if (stats.length >= 2) {
