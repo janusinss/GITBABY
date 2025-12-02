@@ -139,8 +139,8 @@ DELIMITER ;
 INSERT INTO profile (name, bio, hero_bio, hero_image, role, location, contact_email, phone, linkedin, github, facebook, photo, years_experience) 
 VALUES (
     'Diana Mae Castillon',
-    'I love design and everything related to art. I approach problems in a rational and practical way and seek the simplest and most functional solutions possible.',
     "Hi! I'm Diana Mae Castillon, a Frontend Designer based in the Philippines with experience in tech and apassion for creating visually appealing interfaces. I am currently living in Zamboanga City Philippines and pursuing a degree in Computer Science.",
+    'I love design and everything related to art. I approach problems in a rational and practical way and seek the simplest and most functional solutions possible.',
     'img/frontme.png',
     'FrontEnd Designer',
     'Zamboanga City, Philippines',
