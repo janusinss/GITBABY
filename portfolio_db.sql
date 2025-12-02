@@ -17,6 +17,8 @@ CREATE TABLE profile (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     bio TEXT,
+    hero_bio TEXT,
+    hero_image VARCHAR(255),
     role VARCHAR(100),
     location VARCHAR(100),
     contact_email VARCHAR(150),
@@ -134,10 +136,12 @@ DELIMITER ;
 -- ==========================================
 
 -- Profile Data
-INSERT INTO profile (name, bio, role, location, contact_email, phone, linkedin, github, facebook, photo, years_experience) 
+INSERT INTO profile (name, bio, hero_bio, hero_image, role, location, contact_email, phone, linkedin, github, facebook, photo, years_experience) 
 VALUES (
     'Diana Mae Castillon',
     'I love design and everything related to art. I approach problems in a rational and practical way and seek the simplest and most functional solutions possible.',
+    'I love design and everything related to art. I approach problems in a rational and practical way and seek the simplest and most functional solutions possible.',
+    'img/frontme.png',
     'FrontEnd Designer',
     'Zamboanga City, Philippines',
     'dianacast555@gmail.com',

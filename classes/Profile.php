@@ -78,14 +78,16 @@ class Profile {
     public function addProfile($data) {
         try {
             $query = "INSERT INTO " . $this->table . " 
-                     (name, bio, role, location, contact_email, phone, linkedin, github, facebook, photo, years_experience, projects_completed) 
-                     VALUES (:name, :bio, :role, :location, :contact_email, :phone, :linkedin, :github, :facebook, :photo, :years_experience, :projects_completed)";
+                     (name, bio, hero_bio, hero_image, role, location, contact_email, phone, linkedin, github, facebook, photo, years_experience, projects_completed) 
+                     VALUES (:name, :bio, :hero_bio, :hero_image, :role, :location, :contact_email, :phone, :linkedin, :github, :facebook, :photo, :years_experience, :projects_completed)";
             
             $stmt = $this->conn->prepare($query);
             
             // Bind parameters
             $stmt->bindParam(':name', $data['name']);
             $stmt->bindParam(':bio', $data['bio']);
+            $stmt->bindParam(':hero_bio', $data['hero_bio']);
+            $stmt->bindParam(':hero_image', $data['hero_image']);
             $stmt->bindParam(':role', $data['role']);
             $stmt->bindParam(':location', $data['location']);
             $stmt->bindParam(':contact_email', $data['contact_email']);
@@ -124,6 +126,8 @@ class Profile {
             $query = "UPDATE " . $this->table . " 
                      SET name = :name, 
                          bio = :bio, 
+                         hero_bio = :hero_bio,
+                         hero_image = :hero_image,
                          role = :role, 
                          location = :location, 
                          contact_email = :contact_email, 
@@ -142,6 +146,8 @@ class Profile {
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->bindParam(':name', $data['name']);
             $stmt->bindParam(':bio', $data['bio']);
+            $stmt->bindParam(':hero_bio', $data['hero_bio']);
+            $stmt->bindParam(':hero_image', $data['hero_image']);
             $stmt->bindParam(':role', $data['role']);
             $stmt->bindParam(':location', $data['location']);
             $stmt->bindParam(':contact_email', $data['contact_email']);

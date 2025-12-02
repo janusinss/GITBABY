@@ -460,7 +460,7 @@ a {
   height: auto;
   background-color: black;
   color: white;
-  padding: 5rem 1rem;
+  padding: 6.5rem 1rem;
 }
 
 .about-content {
@@ -1581,4 +1581,277 @@ a {
 /* Fix for Manage Portfolio Modal Labels */
 .modal-body .form-group label {
   color: #333333;
+}
+
+/* Creative Save Notification */
+.success-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.success-content {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 2rem 4rem;
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  transform: scale(0.8);
+  animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.success-icon {
+  width: 80px;
+  height: 80px;
+  background: #10b981;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  color: white;
+  font-size: 40px;
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+}
+
+.success-text {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+/* ==============================================
+   NEW MANAGE PORTFOLIO REDESIGN
+   ============================================== */
+
+/* Modal Overlay - Glassmorphism */
+.modal-overlay {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+}
+
+.modal-content {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border-radius: 24px;
+}
+
+/* Header Gradient */
+.modal-header {
+  background: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
+  padding: 2rem;
+  border-bottom: none;
+}
+
+.modal-header h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #fff, #ccc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Tabs Redesign */
+.modal-tabs {
+  background: #f8f9fa;
+  padding: 1rem 2rem 0;
+  gap: 0.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tab-btn {
+  padding: 1rem 1.5rem;
+  border-radius: 12px 12px 0 0;
+  font-weight: 600;
+  color: #6b7280;
+  transition: all 0.3s ease;
+  border: none;
+  background: transparent;
+}
+
+.tab-btn:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.tab-btn.active {
+  background: white;
+  color: var(--orange-500);
+  border-bottom: 3px solid var(--orange-500);
+  box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* Table Redesign - Card Style Rows */
+.crud-table {
+  border-collapse: separate;
+  border-spacing: 0 0.75rem;
+}
+
+.crud-table thead th {
+  background: transparent;
+  border: none;
+  color: #6b7280;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0 1rem;
+}
+
+.crud-table tbody tr {
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.crud-table tbody tr:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.crud-table td {
+  border: 1px solid #f3f4f6;
+  border-width: 1px 0;
+  padding: 1.25rem 1rem;
+}
+
+.crud-table td:first-child {
+  border-left-width: 1px;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.crud-table td:last-child {
+  border-right-width: 1px;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+
+/* Form Redesign */
+.form-header {
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.form-group label {
+  color: #374151;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  background: #f9fafb;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.2s;
+  font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  background: white;
+  border-color: var(--orange-500);
+  box-shadow: 0 0 0 4px rgba(255, 148, 0, 0.1);
+  outline: none;
+}
+
+/* File Upload Component */
+.file-upload-container {
+  border: 2px dashed #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  background: #f9fafb;
+  transition: all 0.2s;
+}
+
+.file-upload-container:hover {
+  border-color: var(--orange-500);
+  background: #fff;
+}
+
+.image-preview {
+  width: 100%;
+  height: 200px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.image-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.upload-btn {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.upload-btn:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
 }
