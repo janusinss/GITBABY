@@ -122,9 +122,11 @@ body {
   min-height: 100vh;
   background-color: white;
   margin: 0;
-  padding-top: 80px; /* Add padding to account for the fixed header */
+  padding-top: 20px;
+  /* Reduced from 80px */
   width: 100%;
-  overflow-x: hidden; /* Prevent horizontal scrolling */
+  overflow-x: hidden;
+  /* Prevent horizontal scrolling */
 }
 
 #top {
@@ -242,7 +244,8 @@ body {
 
 /* Hero Section */
 .hero {
-  padding: 1.5rem 1rem;
+  padding: 0 1rem 1.5rem 1rem;
+  /* Removed top padding */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1044,22 +1047,25 @@ a {
   .container {
     padding: 0 2rem;
   }
-  
-  .hero, .about-content {
+
+  .hero,
+  .about-content {
     padding: 3rem 2rem;
   }
 }
 
 @media (max-width: 1199px) {
-  .hero-title, .hero-subtitle {
+
+  .hero-title,
+  .hero-subtitle {
     font-size: 3rem;
   }
-  
+
   .about-image-container {
     width: 300px;
     height: 300px;
   }
-  
+
   .about-content {
     gap: 3rem;
   }
@@ -1069,20 +1075,21 @@ a {
   .hero {
     padding: 2rem 1rem;
   }
-  
-  .hero-title, .hero-subtitle {
+
+  .hero-title,
+  .hero-subtitle {
     font-size: 2.5rem;
   }
-  
+
   .about-image-container {
     width: 250px;
     height: 250px;
   }
-  
+
   .section-title {
     font-size: 2rem;
   }
-  
+
   .languages-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
@@ -1094,20 +1101,20 @@ a {
     position: fixed;
     padding: 1rem 0;
   }
-  
+
   .main {
     padding-top: 70px;
   }
-  
+
   .hamburger-menu {
     display: flex;
   }
 
   /* Hide the contact button in header on mobile */
-  .header-container > .contact-btn {
+  .header-container>.contact-btn {
     display: none;
   }
-  
+
   .nav {
     position: fixed;
     top: 0;
@@ -1122,7 +1129,7 @@ a {
     z-index: 1000;
     overflow-y: auto;
   }
-  
+
   .nav.active {
     right: 0;
   }
@@ -1132,32 +1139,32 @@ a {
     display: inline-block;
     margin-top: 1rem;
   }
-  
+
   .hero {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .hero-content {
     margin-bottom: 2rem;
     max-width: 100%;
   }
-  
+
   .about-content {
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
-  
+
   .timeline {
     display: block;
   }
-  
+
   .timeline-column {
     width: 100%;
     padding: 0 1rem;
   }
-  
+
   .timeline-column::before {
     display: none;
   }
@@ -1194,211 +1201,225 @@ a {
 
 /* 1. Floating Button */
 .manage-btn {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    width: 60px;
-    height: 60px;
-    background-color: var(--orange-500); /* Matches your theme */
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    z-index: 2000;
-    transition: transform 0.2s, background-color 0.2s;
-    color: black;
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: var(--orange-500);
+  /* Matches your theme */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  z-index: 2000;
+  transition: transform 0.2s, background-color 0.2s;
+  color: black;
 }
 
 .manage-btn:hover {
-    transform: scale(1.1);
-    background-color: white;
+  transform: scale(1.1);
+  background-color: white;
 }
 
 /* 2. Modal Overlay */
 .modal-overlay {
-    display: none; /* Hidden by default */
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.85);
-    z-index: 2001;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(5px);
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 2001;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(5px);
 }
 
 .modal-content {
-    background-color: white;
-    width: 90%;
-    max-width: 900px;
-    height: 85%;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  background-color: white;
+  width: 90%;
+  max-width: 900px;
+  height: 85%;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
 /* 3. Header & Tabs */
 .modal-header {
-    padding: 1.5rem;
-    background-color: black;
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  padding: 1.5rem;
+  background-color: black;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .close-btn {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 2rem;
-    cursor: pointer;
-    line-height: 1;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  line-height: 1;
 }
 
 .close-btn:hover {
-    color: var(--orange-500);
+  color: var(--orange-500);
 }
 
 .modal-tabs {
-    display: flex;
-    background-color: #f3f4f6;
-    border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  background-color: #f3f4f6;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .tab-btn {
-    flex: 1;
-    padding: 1rem;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
+  flex: 1;
+  padding: 1rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 
 .tab-btn:hover {
-    background-color: #e5e7eb;
+  background-color: #e5e7eb;
 }
 
 .tab-btn.active {
-    background-color: white;
-    color: var(--orange-500);
-    border-bottom: 3px solid var(--orange-500);
-    font-weight: 700;
+  background-color: white;
+  color: var(--orange-500);
+  border-bottom: 3px solid var(--orange-500);
+  font-weight: 700;
 }
 
 /* 4. Modal Body & Tables */
 .modal-body {
-    padding: 2rem;
-    overflow-y: auto;
-    flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .crud-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 1rem;
-    font-size: 0.9rem;
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  font-size: 0.9rem;
 }
 
-.crud-table th, .crud-table td {
-    border: 1px solid #e5e7eb;
-    padding: 0.75rem;
-    text-align: left;
-    color: black;
+.crud-table th,
+.crud-table td {
+  border: 1px solid #e5e7eb;
+  padding: 0.75rem;
+  text-align: left;
+  color: black;
 }
 
 .crud-table th {
-    background-color: #f9fafb;
-    font-weight: 600;
+  background-color: #f9fafb;
+  font-weight: 600;
 }
 
 /* 5. Action Buttons */
 .action-btn {
-    padding: 0.25rem 0.75rem;
-    margin-right: 0.5rem;
-    border-radius: 4px;
-    cursor: pointer;
-    border: none;
-    font-size: 0.8rem;
-    color: white;
+  padding: 0.25rem 0.75rem;
+  margin-right: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  font-size: 0.8rem;
+  color: white;
 }
 
-.btn-edit { background-color: #3b82f6; }
-.btn-edit:hover { background-color: #2563eb; }
+.btn-edit {
+  background-color: #3b82f6;
+}
 
-.btn-delete { background-color: #ef4444; }
-.btn-delete:hover { background-color: #dc2626; }
+.btn-edit:hover {
+  background-color: #2563eb;
+}
+
+.btn-delete {
+  background-color: #ef4444;
+}
+
+.btn-delete:hover {
+  background-color: #dc2626;
+}
 
 /* 6. Form Styles */
 .form-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .form-header h3 {
-    color: black;
-    font-size: 1.5rem;
+  color: black;
+  font-size: 1.5rem;
 }
 
 .btn-cancel {
-    background-color: #9ca3af;
-    color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
+  background-color: #9ca3af;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 .form-group {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .form-group label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #ffffff;
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #ffffff;
 }
 
 .modal-body input[type="text"],
 .modal-body input[type="number"],
 .modal-body textarea,
 .modal-body select {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-family: inherit;
-    font-size: 0.95rem;
-    background-color: #fff;
-    color: black;
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  background-color: #fff;
+  color: black;
 }
 
 .modal-body textarea {
-    resize: vertical;
-    min-height: 100px;
+  resize: vertical;
+  min-height: 100px;
 }
 
 .save-btn {
-    width: 100%;
-    background-color: #10b981; /* Green */
-    color: white;
-    margin-top: 1rem;
+  width: 100%;
+  background-color: #10b981;
+  /* Green */
+  color: white;
+  margin-top: 1rem;
 }
 
 .save-btn:hover {
-    background-color: #059669;
+  background-color: #059669;
 }
 
 /* ==============================================
@@ -1407,148 +1428,157 @@ a {
 
 /* Profile View Card */
 .profile-view-card {
-    background: #f9fafb;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 2rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 2rem;
 }
 
 .profile-view-header {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid #e5e7eb;
-    margin-bottom: 2rem;
-    position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 2rem;
+  position: relative;
 }
 
 .profile-avatar-large {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid var(--orange-500);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--orange-500);
 }
 
 .profile-avatar-large img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .profile-header-info h2 {
-    margin: 0;
-    font-size: 1.5rem;
-    color: black;
+  margin: 0;
+  font-size: 1.5rem;
+  color: black;
 }
 
 .role-badge {
-    display: inline-block;
-    background-color: #fff3cd;
-    color: #856404;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-top: 0.5rem;
+  display: inline-block;
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
 }
 
 .edit-profile-btn {
-    margin-left: auto; /* Pushes button to right */
+  margin-left: auto;
+  /* Pushes button to right */
 }
 
 /* Profile Grid for Details */
 .profile-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
-.profile-item label, .profile-full-width label {
-    display: block;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    color: #6b7280;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    margin-bottom: 0.25rem;
+.profile-item label,
+.profile-full-width label {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #6b7280;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
 }
 
 .profile-item p {
-    font-weight: 500;
-    color: #111827;
-    font-size: 1rem;
+  font-weight: 500;
+  color: #111827;
+  font-size: 1rem;
 }
 
 .bio-text {
-    line-height: 1.6;
-    color: #374151;
-    background: white;
-    padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
+  line-height: 1.6;
+  color: #374151;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
 }
 
 /* Table Enhancements */
 .mini-icon {
-    width: 24px;
-    height: 24px;
-    margin-right: 10px;
-    vertical-align: middle;
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+  vertical-align: middle;
 }
 
 .flex-align {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .tag-badge {
-    background: #eef2ff;
-    color: #4f46e5;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.8rem;
+  background: #eef2ff;
+  color: #4f46e5;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
 }
 
 .progress-bar {
-    width: 60px;
-    height: 6px;
-    background: #e5e7eb;
-    border-radius: 3px;
-    display: inline-block;
-    margin-right: 8px;
-    overflow: hidden;
+  width: 60px;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 3px;
+  display: inline-block;
+  margin-right: 8px;
+  overflow: hidden;
 }
 
 .progress-bar div {
-    height: 100%;
-    background: var(--orange-500);
+  height: 100%;
+  background: var(--orange-500);
 }
 
 .tab-actions {
-    margin-bottom: 1rem;
-    display: flex;
-    justify-content: flex-end;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .table-responsive {
-    overflow-x: auto;
+  overflow-x: auto;
 }
 
 /* Responsive Grid for Profile */
 @media (max-width: 600px) {
-    .profile-view-header {
-        flex-direction: column;
-        text-align: center;
-    }
-    .edit-profile-btn {
-        margin-left: 0;
-        width: 100%;
-        margin-top: 1rem;
-    }
-    .profile-grid {
-        grid-template-columns: 1fr;
-    }
+  .profile-view-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .edit-profile-btn {
+    margin-left: 0;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Fix for Manage Portfolio Modal Labels */
+.modal-body .form-group label {
+  color: #333333;
 }
