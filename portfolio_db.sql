@@ -149,7 +149,7 @@ VALUES (
     'https://www.linkedin.com/in/diana-castillon-5603262a4/',
     'https://github.com/Dianacast6',
     'https://www.facebook.com/igivebackshots/',
-    'img/frontme.png',
+    'img/aboutme.png',
     2
     -- Note: projects_completed will be updated automatically by triggers when we insert projects below!
 );
