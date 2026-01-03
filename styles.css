@@ -29,6 +29,11 @@ body {
 }
 
 /* Utility Classes */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 100px; /* Account for fixed header */
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -191,6 +196,19 @@ body {
   display: flex;
   align-items: center;
   gap: 2.5rem;
+  position: relative; /* For slider positioning */
+}
+
+.nav-slider {
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background-color: var(--orange-500);
+  transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 9999px;
+  pointer-events: none;
 }
 
 .nav-link {
@@ -200,7 +218,8 @@ body {
   transition: color 0.2s;
 }
 
-.nav-link:hover {
+.nav-link:hover,
+.nav-link.active {
   color: var(--orange-500);
 }
 
@@ -1055,7 +1074,6 @@ a {
 }
 
 @media (max-width: 1199px) {
-
   .hero-title,
   .hero-subtitle {
     font-size: 3rem;
@@ -1111,7 +1129,7 @@ a {
   }
 
   /* Hide the contact button in header on mobile */
-  .header-container>.contact-btn {
+  .header-container > .contact-btn {
     display: none;
   }
 
