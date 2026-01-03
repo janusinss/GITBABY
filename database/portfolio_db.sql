@@ -217,11 +217,11 @@ VALUES (
     ),
     (
         1,
-        'Animal Shelter App Page Design - StrayHaven',
-        'Mobile app design for animal shelter',
-        '#',
-        'img/petsim.png',
-        'UI/UX Design,Wireframe,App Design',
+        'BlitzType - Typing Game',
+        'A typing game that challenges your typing skills',
+        'https://blitztype-5cd8b.web.app/',
+        'img/blitztype.png',
+        'Full-Stack,Deployed,App Design',
         4
     );
 -- Education Data
