@@ -654,7 +654,7 @@ a {
 }
 
 .language-name {
-  color: var(--gray-400);
+  color: #ffffff;
 }
 
 /* Projects Section */
@@ -870,7 +870,7 @@ a {
 }
 
 .contact-description {
-  color: var(--gray-400);
+  color: #ffffff;
   margin-bottom: 2rem;
 }
 
@@ -957,6 +957,12 @@ a {
 .form-group {
   display: flex;
   flex-direction: column;
+}
+
+.contact .form-group label {
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
 }
 
 .form-group input,

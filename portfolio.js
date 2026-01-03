@@ -202,7 +202,7 @@ async function loadProjects() {
 // Load Tools
 async function loadTools() {
   const result = await apiCall("hobbies_api.php", "read", {
-    params: `&profile_id=${PROFILE_ID}&category=tool`,
+    params: `&profile_id=${PROFILE_ID}`,
   });
 
   if (result.success && result.data) {
@@ -769,8 +769,6 @@ function generateFormHTML(type, data, action) {
   }
   // --- HOBBIES ---
   else if (type === "hobbies") {
-    const isHobby = val("category") === "hobby" ? "selected" : "";
-    const isTool = val("category") === "tool" ? "selected" : "";
     fields = `
         <div class="form-group"><label>Name</label><input type="text" name="name" value="${val(
           "name"
@@ -778,7 +776,6 @@ function generateFormHTML(type, data, action) {
         <div class="form-group"><label>Description</label><textarea name="description" rows="2">${val(
           "description"
         )}</textarea></div>
-        <div class="form-group"><label>Category</label><select name="category"><option value="hobby" ${isHobby}>Hobby</option><option value="tool" ${isTool}>Tool</option></select></div>
         ${createFileInput("Hobby Icon", "icon", val("icon"))}
     `;
   }
@@ -1042,7 +1039,7 @@ function setupNavSlider() {
         offsetPosition = elementPosition + window.pageYOffset - headerOffset;
       }
     }
-    smoothScrollTo(offsetPosition, 1000);
+    smoothScrollTo(offsetPosition, 500);
   }
 
   // Click event for Smooth Scroll & Slider (Nav Links)
@@ -1070,6 +1067,21 @@ function setupNavSlider() {
     });
   }
 
+  // Click event for Logo (Home) - Add Smooth Scroll
+  const logoLink = document.querySelector(".logo-link");
+  if (logoLink) {
+    logoLink.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      // Hide slider
+      moveSlider(null);
+      // Remove active from any links
+      links.forEach((l) => l.classList.remove("active"));
+
+      triggerScroll("#top");
+    });
+  }
+
   // Scroll Spy (IntersectionObserver)
   const sections = [
     "hero",
@@ -1087,6 +1099,13 @@ function setupNavSlider() {
 
   const observer = new IntersectionObserver((entries) => {
     if (isManualScrolling) return;
+
+    // Force hide if at top (overrides intersection logic)
+    if (window.scrollY < 100) {
+      moveSlider(null);
+      links.forEach((l) => l.classList.remove("active"));
+      return;
+    }
 
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -1110,4 +1129,10 @@ function setupNavSlider() {
     const sect = document.getElementById(id);
     if (sect) observer.observe(sect);
   });
+
+  // Initial check to ensure slider is hidden at the top
+  if (window.scrollY < 50) {
+    moveSlider(null);
+    links.forEach((l) => l.classList.remove("active"));
+  }
 }

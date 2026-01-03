@@ -162,14 +162,21 @@ VALUES (
         'Figma',
         'Design and prototyping tool',
         'img/figma_icon.png',
-        'tool'
+        'hobby'
     ),
     (
         1,
         'Sketch',
         'Vector graphics editor',
         'img/sketch_icon.png',
-        'tool'
+        'hobby'
+    ),
+    (
+        1,
+        'Picsart',
+        'Photo and video editing',
+        'img/picsart_icon.png',
+        'hobby'
     );
 -- Projects Data
 INSERT INTO projects (
@@ -192,11 +199,11 @@ VALUES (
     ),
     (
         1,
-        'NFT Trading Platform - Crypt ART',
-        'Modern NFT marketplace platform',
-        '#',
-        'img/nftsite.png',
-        'UI Design,Wireframe,Web Design',
+        'QuickNote - Creativity To its Finest',
+        'Building the Extension of Your Mind',
+        'https://diana-mini-project.ct.ws/index.php',
+        'img/quicknote.png',
+        'Full-Stack,Deployed,Web Design',
         2
     ),
     (

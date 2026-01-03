@@ -31,12 +31,13 @@ try {
             }
             echo json_encode($result);
             break;
-            
+
         case 'add':
             if ($method === 'POST') {
                 $data = json_decode(file_get_contents('php://input'), true);
-                if (!$data) $data = $_POST;
-                
+                if (!$data)
+                    $data = $_POST;
+
                 if (empty($data['name']) || empty($data['profile_id'])) {
                     echo json_encode([
                         'success' => false,
@@ -44,57 +45,58 @@ try {
                     ]);
                     break;
                 }
-                
+
                 // Set default category if not provided
                 if (!isset($data['category'])) {
                     $data['category'] = 'hobby';
                 }
-                
+
                 $result = $hobby->addHobby($data);
                 echo json_encode($result);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Invalid request method']);
             }
             break;
-            
+
         case 'update':
             if ($method === 'POST' || $method === 'PUT') {
                 $data = json_decode(file_get_contents('php://input'), true);
-                if (!$data) $data = $_POST;
-                
+                if (!$data)
+                    $data = $_POST;
+
                 if (!$id) {
                     echo json_encode(['success' => false, 'message' => 'Hobby ID is required']);
                     break;
                 }
-                
+
                 $result = $hobby->updateHobby($id, $data);
                 echo json_encode($result);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Invalid request method']);
             }
             break;
-            
+
         case 'delete':
             if ($method === 'POST' || $method === 'DELETE') {
                 if (!$id) {
                     echo json_encode(['success' => false, 'message' => 'Hobby ID is required']);
                     break;
                 }
-                
+
                 $result = $hobby->deleteHobby($id);
                 echo json_encode($result);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Invalid request method']);
             }
             break;
-            
+
         default:
             echo json_encode([
                 'success' => false,
                 'message' => 'Invalid action. Use: read, add, update, delete'
             ]);
     }
-    
+
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => 'Server error: ' . $e->getMessage()]);
 }
